@@ -1,4 +1,5 @@
 from typing import Self
+from lcs import lcs
 
 
 class Trie:
@@ -23,30 +24,38 @@ class Trie:
             return True
         return False
 
-    def add(self: Self, word: str):
-        cursor = self.root
-        for char in word:
-            c = ord(char)
-            if c in cursor.nodes:
-                cursor = cursor.nodes[c]
-                continue
-            cursor.nodes[c] = Node(c)
-            cursor = cursor.nodes[c]
-        cursor.is_terminal = True
+    def _add(self: Self, cursor: Node | None, word: str) -> Node:
+        if cursor is None:
+            return Node(word, True)
+        if len(word) == 0:
+            cursor.is_terminal = True
+            return cursor
+        common_prefix_legth = lcs(cursor.prefix, word)
+        if common_prefix_legth == len(cursor.prefix):  # Avoid repetead words
+            cursor.is_terminal = True
+            return cursor
+        remainding_word = cursor.prefix[common_prefix_legth:]
+
+        # Copy the remainding nodes
+        temp = Node(remainding_word, False)
+        for k, v in cursor.nodes.items():
+            temp.nodes[k] = v
+
+        cursor.nodes.clear()
+        cursor.prefix = cursor.prefix[:common_prefix_legth]
+        cursor.nodes[remainding_word] = temp
+
+        return self._add(cursor, word)
 
 
 class Node:
-    def __init__(self: Self, data: int):
-        self.prefix: str = ""
-        self.data: int = data
-        self.nodes: dict[int, Node] = {}
-        self.is_terminal: bool = False
+    def __init__(self: Self, prefix: str, is_terminal: bool):
+        self.prefix: str = prefix
+        self.nodes: dict[str, Node] = {}
+        self.is_terminal: bool = is_terminal
 
 
 trie = Trie()
-trie.add("anthony")
-trie.add("jose")
-trie.add("marco")
 
 if trie.contains("marcos"):
     print("trie contains marco")
