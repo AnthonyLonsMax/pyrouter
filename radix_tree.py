@@ -6,30 +6,54 @@ class Trie:
     def __init__(self: Self):
         self.root: Node = Node("", False)
 
-    def add(self: Self, cursor: Node, word: str):
+    def add(self: Self, cursor: Node | None, word: str) -> Node:
         if word == "":
-            return
+            return Node("", False)
+        if cursor is None:
+            cursor = Node(word, True)
+            return cursor
 
         if not word[0] in cursor.nodes:
             cursor.nodes[word[0]] = Node(word, True)
-            return
+            return cursor
 
         word = word[1:]
         cursor = cursor.nodes[word[0]]
 
-        common_prefix_length = lcs(cursor.prefix[1:], word)
+        common_prefix_length = lcs(cursor.prefix, word)
 
         if common_prefix_length == 0:
             if len(word) > 0:
                 cursor.nodes[word[0]] = Node(word, True)
-                return
+            return cursor
 
         if common_prefix_length < len(cursor.prefix):
-            pass
+            # Node split
+            temp = Node(
+                cursor.prefix[common_prefix_length:], False
+            )  # Le agrego la nalga
+            for k, v in cursor.nodes.items():
+                temp.nodes[k] = v
+            cursor.nodes.clear()
+            cursor.prefix = cursor.prefix[:common_prefix_length]
+            cursor.nodes[temp.prefix[0]] = temp
 
-        if common_prefix_length == len(word):
-            cursor.is_terminal = True
-            return
+            # Add the new node
+            cursor.nodes[word[common_prefix_length:][0]] = Node(
+                word[common_prefix_length:], True
+            )
+
+        if common_prefix_length == len(cursor.prefix):
+            if common_prefix_length == len(word):
+                cursor.is_terminal = True
+                return cursor
+            else:
+                return self.add(
+                    cursor.nodes[word[common_prefix_length + 1]],
+                    word[common_prefix_length:],
+                )
+
+        return cursor
 
 
 class Node:
