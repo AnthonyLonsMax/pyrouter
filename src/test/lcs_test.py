@@ -1,4 +1,4 @@
-from .lcs import lcs
+from httprouter.lcs import lcs
 
 
 def test_longest_str():

@@ -1,9 +1,7 @@
 def lcs(one: str, two: str) -> int:
-    largest = len(one)
-    if len(two) > len(one):
-        largest = len(two)
+    min_length = min(len(one), len(two))
     count = 0
-    for i in range(0, largest - 1):
+    for i in range(0, min_length):
         if one[i] == two[i]:
             count = count + 1
             continue

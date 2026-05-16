@@ -1,6 +1,6 @@
 def task_test():
     """Run application test"""
-    return {"actions": ["uv run pytest"], "verbosity": 2}
+    return {"actions": ["uv run pytest -v"], "verbosity": 2}
 
 
 def task_echo():
