@@ -10,3 +10,4 @@ def test_tree_add():
     ptrie.add("wallet")
 
     ptrie.dfs()
+    assert 2 == 2

@@ -8,3 +8,9 @@ dependencies = [
     "doit>=0.37.0",
     "pytest>=9.0.3",
 ]
+
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]

@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, override
 from httprouter.lcs import lcs
 
 
@@ -80,3 +80,7 @@ class Node:
         self.prefix: str = prefix
         self.nodes: dict[str, Node] = {}
         self.is_terminal: bool = is_terminal
+
+    @override
+    def __repr__(self) -> str:
+        return f"Node{self.prefix}"
